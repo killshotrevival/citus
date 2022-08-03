@@ -37,17 +37,17 @@ spec:
       - name: postgres
         image: citusdata/citus:latest
         args: ['postgres', '-c', 'ssl=on', '-c', 'ssl_cert_file=/etc/citus-cert/tls.crt', '-c', 'ssl_key_file=/etc/citus-cert/tls.key']
-        lifecycle:
-          postStart:
-            exec:
-              command:
-                - timeout
-                - 5m
-                - sh
-                - -c
-                - >
-                   until pg_isready -U postgres --timeout=5 --quiet; do sleep 2; done;
-                   psql 'host=citus-coordinator user=postgres' -c "SELECT * from citus_add_node('${HOSTNAME}.citus-worker.default.svc.cluster.local', 6432);"
+        # lifecycle:
+        #   postStart:
+        #     exec:
+        #       command:
+        #         - timeout
+        #         - 5m
+        #         - sh
+        #         - -c
+        #         - >
+        #            until pg_isready -U postgres --timeout=5 --quiet; do sleep 2; done;
+        #            psql 'host=citus-coordinator user=postgres' -c "SELECT * from citus_add_node('${HOSTNAME}.citus-worker.default.svc.cluster.local', 6432);"
         ports:
         - containerPort: 5432
         env:
