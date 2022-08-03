@@ -1,0 +1,16 @@
+FROM citusdata/citus:latest
+LABEL maintainer="peeyush.tyagi@tagbox.in"
+RUN apt-get update
+RUN apt-get -y install postgresql-14-cron git build-essential postgresql-server-dev-14 postgis postgresql-14-postgis-3
+
+RUN git clone https://github.com/pgpartman/pg_partman.git
+RUN cd pg_partman && make install
+
+RUN cd / && \
+        rm -rf /pg_partman && \
+        apt-get remove -y git build-essential postgresql-server-dev-14 postgis postgresql-14-postgis-3 && \
+        apt-get autoremove --purge -y && \
+        apt-get clean && \
+        apt-get purge
+
+COPY init-db /docker-entrypoint-initdb.d
